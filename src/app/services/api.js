@@ -104,14 +104,6 @@
             }
             return false;
         };
-        this.memory = (title) =>{
-            return;
-            // if (window.performance && window.performance.memory)
-            // {
-            //     console.info(window.performance.memory);
-            //     console.info( title+' | MEMORY, used:'+numbro(window.performance.memory.usedJSHeapSize).format('0.000 b'),'total:'+numbro(window.performance.memory.totalJSHeapSize).format('0.000 b'));
-            // }
-        };
 
         this.resetDatabaseStructure = () => {
             console.log('reset databaseStructure');
@@ -123,8 +115,6 @@
          * @constructor
          */
         this.databaseStructure = (call,forceReload) =>{
-
-            // console.warn('Call databaseStructure:',forceReload);
 
             if (!forceReload && _DatabaseStructure.isInit()) {
                 return call(_DatabaseStructure);
@@ -140,33 +130,6 @@
                 _DatabaseStructure=new DatabaseStructure();
             }
 
-            //
-            // const columns = await this.fetchQuery( "SELECT * FROM system.columns" );
-            // const tables = await this.fetchQuery( "SELECT database,name,engine FROM system.tables" );
-            // const databases = await this.fetchQuery( "SELECT name FROM system.databases" );
-            // const dictionaries = this.fetchQuery("SELECT name,key,attribute.names,attribute.types from system.dictionaries ARRAY JOIN attribute ORDER BY name,attribute.names", null);
-            // const functions = this.fetchQuery("SELECT name,is_aggregate from system.functions", null)
-
-
-            // //
-            //
-            // if (this.isTabixServer()) {
-            //
-            //
-            //     console.time("TS:Load Database Structure!");
-            //     this.fetchTabixServer('structure').then(data=> {
-            //
-            //         console.info("TS>",data);
-            //
-            //     });
-            //
-            //     return ;
-            // }
-
-
-            // @todo - need rewrite async / await
-            // тут нужно или остановить другие потоки, и повесить ожидание пока не завершиться инициализация
-            // Глобавльно без и
             console.time("Load Database Structure!");
             this.fetchQuery( "SELECT * FROM system.columns" ).then(columns => {
                 this.fetchQuery( "SELECT database,name,engine FROM system.tables" ).then(tables => {
@@ -184,7 +147,7 @@
 
             } , (response) => {throw response } );//system.columns
 
-            return ;
+            return true;
 
         };
 
@@ -487,143 +450,5 @@
                 //             console.error("fetchQuery",error);
                 //     });
         };
-
-
-        // ------------------------------------------------------------------------------------------------------------------------------------------------
-        // @todo for send_progress_in_http_headers try https://github.com/sockjs/sockjs-client
-        // Access-Control-Expose-Headers : X-ClickHouse-Progress
-        // https://stackoverflow.com/questions/15042439/cant-get-custom-http-header-response-from-ajax-getallresponseheaders
-        // https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/Using_XMLHttpRequest#Monitoring_progress
-        // ClickHouse/dbms/src/IO/WriteBufferFromHTTPServerResponse.cpp
-        // readystatechange: function(event) {
-        //     console.log("readystatechange");
-        //     console.log(event);
-        // },
-        //  "progress":function(event){
-        //      console.log("progress");
-        //     console.log(event);
-        //  },
-        //  onreadystatechange:function(event){
-        //     console.log("change");
-        //     console.log(event);
-        //  },
-        //  onprogress:function(event){
-        //      console.log("onprogress");
-        //      console.log(event);
-        // }
-        // uploadEventHandlers: {
-        //     progress: function (e) {
-        //         console.log('uploadEventHandlers',e);
-        //         if (e.lengthComputable) {
-        //             // $scope.progressBar = (e.loaded / e.total) * 100;
-        //             // $scope.progressCounter = $scope.progressBar;
-        //         }
-        //     }
-        // },
-        // transformResponse: (data, header, status) => {
-        //     try {
-        //         return angular.fromJson(data);
-        //         // return JSON.parse(data);
-        //     } catch (err) {
-        //         console.error(err);
-        //         return (data ? data : "\nStatus:" + status + "\nHeaders:" + angular.toJson(header()));
-        //     }
-        // }
-        // ------------------------------------------------------------------------------------------------------------------------------------------------
-
-
-
-        // /**
-        //  * @ngdoc method
-        //  * @methodOf smi2.service:API
-        //  * @name query
-        //  * @description Выполнение запроса к БД
-        //  * @param {string} sql Текст запроса
-        //  * @return {promise} Promise
-        //  */
-        // this.query = (sql, format, withDatabase, extend_settings) => {
-        //     let defer = $q.defer();
-        //
-        //     console.warn("!!!!!!! DEPRICATED!");
-        //     console.warn("!query DEPRICATED !");
-        //     console.warn("!!!!!!! DEPRICATED!");
-        //
-        //     let query=this.makeSqlQuery(sql,format);
-        //     let url=this.makeUrlRequest(withDatabase,extend_settings);
-        //     let req=false;
-        //
-        //     // console.info("Query",query);
-        //     // console.info("URL",url);
-        //
-        //
-        //     if (this.isTabixServer()) {
-        //         // tabix server
-        //     } else {
-        //          req = {
-        //             method: 'POST',
-        //             data :query,
-        //             headers: {  'Content-Type': 'application/x-www-form-urlencoded'},
-        //             url: url,
-        //             cache: false,
-        //         };
-        //
-        //
-        //
-        //
-        //     }
-        //     console.info("SQL>",url,query,req);
-        //
-        //     $http(req).then(
-        //         response => defer.resolve(response.data),
-        //         reason => defer.reject(reason)
-        //     );
-        //     return defer.promise;
-        // };
-
-        //
-        // /**
-        //  *
-        //  * @param data
-        //  * @returns {string}
-        //  */
-        // this.dataToCreateTable = (data) => {
-        //     let q = "\n" + 'CREATE TABLE x (' + "\n";
-        //     let keys = [];
-        //     data.meta.forEach((cell) => keys.push("\t" + cell.name + " " + cell.type));
-        //
-        //     return q + keys.join(",\n") + "\n ) ENGINE = Log \n;;\n";
-        // };
-        //
-        // /**
-        //  * @ngdoc method
-        //  * @methodOf smi2.service:API
-        //  * @name dataToHtml
-        //  * @description Преобразование JSON данных запроса в таблицу
-        //  * @param {mixed} data Объект, который содержит ответ БД
-        //  * @return {string} Строка HTML
-        //  */
-        // this.dataToHtml = (data) => {
-        //
-        //     let html = `<table class="sql-table ${ThemeService.theme}"><tr>`;
-        //     let keys = [];
-        //     data.meta.forEach((cell) => {
-        //         html += `<th>${$sanitize(cell.name)}
-        //                     <div class="sql-table__subheader">${$sanitize(cell.type)}</div>
-        //                 </th>`;
-        //         keys.push(cell.name);
-        //     });
-        //     data.data.forEach((row) => {
-        //         html += '<tr>';
-        //         keys.forEach((key) => {
-        //             html += '<td>' + $sanitize(row[key]) + '</td>';
-        //         });
-        //         html += '</tr>';
-        //     });
-        //     html += '</table>';
-        //     return html;
-        // };
-        //
-
-
     }
 })(angular, smi2);
