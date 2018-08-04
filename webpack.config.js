@@ -12,6 +12,8 @@ const isDevelopment = NODE_ENV === 'development';
 const isStage = process.env.TYPE === 'stage';
 
 const checkDir = dir => !fs.existsSync(dir) && fs.mkdirSync(dir);
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
+
 
 const build = async () => {
     //create folders
@@ -32,6 +34,10 @@ const build = async () => {
     });
 
     const plugins = [
+        new MonacoWebpackPlugin(),
+        new webpack.DefinePlugin({
+            'process.browser': true
+        }),
         new webpack.DefinePlugin({
             'process.env': {
                 BROWSER: JSON.stringify(true),

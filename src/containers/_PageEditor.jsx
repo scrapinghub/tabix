@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
 import {Popover,PopoverInteractionKind,Menu,MenuItem,MenuDivider, Button,AnchorButton,ButtonGroup,Position } from "@blueprintjs/core";
-import AceEditor from "../components/Ace/Ace.js";
-import SplitterLayout from 'Service/SplitterLayout.jsx';
+// import AceEditor from "../components/Ace/Ace.js";
+// import SplitterLayout from 'Service/SplitterLayout.jsx';
+
+
+import {languageDef,configuration} from "../components/Monaco/Clickhouse.js";
 import {Classes, ContextMenu} from "@blueprintjs/core/lib/esm/index";
 import {connectedApi} from 'api';
-
+import MonacoEditor from 'react-monaco-editor';
 
 const dataSources = {
     col1: [1, 2, 3], // eslint-disable-line no-magic-numbers
@@ -26,7 +29,7 @@ export default class _PageEditor extends Component {
         // console.warn(connectedApi());
         //
         //
-        this.state = {data: [], layout: {}, frames: [],DatabaseStructure:false};
+        this.state = {data: [], layout: {}, frames: [],DatabaseStructure:false,code: '@@LANGID select * from  ABSOLUTE 1234 ALL COUNT COUNT() -- type your code...'};
     }
     componentDidMount() {
 
@@ -36,7 +39,29 @@ export default class _PageEditor extends Component {
         }
 
     }
+    editorWillMount(monaco)
+    {
+        this.monaco=monaco;
+        if (!monaco.languages.getLanguages().some(({ id }) => id === 'clickhouse')) {
+            // Register a new language
+            monaco.languages.register({ id: 'clickhouse' });
+            // Register a tokens provider for the language
+            monaco.languages.setMonarchTokensProvider('clickhouse', languageDef);
+            // Set the editing configuration for the language
+            monaco.languages.setLanguageConfiguration('clickhouse', configuration);
+            console.log('monaco - register ClickHouse',languageDef);
+        }
 
+    }
+    editorDidMount(editor, monaco) {
+
+
+
+        editor.focus();
+    }
+    onChange(newValue, e) {
+        console.log('onChange', newValue, e);
+    }
     listDatabasePopover() {
         return (
             <Menu className={Classes.DARK}>
@@ -59,41 +84,31 @@ export default class _PageEditor extends Component {
         );
     }
     render() {
+
+        const code = this.state.code;
+        const options = {
+            automaticLayout:true,
+            selectOnLineNumbers: true,
+            fontSize:14,
+            formatOnPaste:true,
+            fontFamily:'Menlo'
+        };
+
+
         const id='aceId'+Date.now().toString();
         return (
-            <div style={{display: 'table', width: '100%',height:'inherit'}}>
-                {/*<SplitterLayout vertical>*/}
-                    <div>
-                        <AceEditor
-                            mode="clickhouse" focus={true}
-                            theme="cobalt" fontSize="14"
-                            width="100%"
-                            minHeight="200px"
-                            height="inherit"
-                            value="SELECT FROM table"
-                            name={id}
-                            style={{minHeight:'250px'}}
-                            // dataStructure={dataStructure}
-                            // currentDatabaseName={currentDatabaseName}
-
-                        />
-
-
-                    </div>
-                    <div>
-                        <ButtonGroup style={{ minWidth: 200 }} minimal>
-                            <Button icon="fast-forward" intent="success" minimal>Run all ⇧ + ⌘ + ⏎</Button>
-                            <Button icon="play" minimal>Run current</Button>
-                            <AnchorButton icon="cog" minimal></AnchorButton>
-                            {this.renderListDatabaseButton()}
-                        </ButtonGroup>
-                        <hr />
-
-
-
-
-                    </div>
-                {/*</SplitterLayout>*/}
+            <div className={'DivMonacoEditor'}>
+                <MonacoEditor
+                    width="100%"
+                    height="600"
+                    language="clickhouse"
+                    theme="vs-dark"
+                    value={code}
+                    options={options}
+                    editorWillMount={::this.editorWillMount}
+                    onChange={::this.onChange}
+                    editorDidMount={::this.editorDidMount}
+                />
             </div>
         );
     }

@@ -11,6 +11,7 @@ const ch_dataTypes = (
     'uint8|uint16|uint32|uint64|int8|int16|int32|int64|float32|float64|datetime|enum8|enum16|' +
     'fixedstring|array|tuple|string'+
     'Distributed|MergeTree|SummingMergeTree|ReplacingMergeTree|ReplicatedMergeTree|Buffer|ReplicatedCollapsingMergeTree|CollapsingMergeTree|AggregatingMergeTree|Merge|Memory|GraphiteMergeTree|ReplicatedAggregatingMergeTree|ReplicatedSummingMergeTree'
+
 );
 
 const ch_constants = (

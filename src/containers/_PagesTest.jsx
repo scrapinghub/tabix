@@ -203,7 +203,7 @@ export default class Pages extends Component {
 
 
 const ReactPanel = () => (
-    <div  style={{border:'0px solid red',width:100+'%',minHeight:500+'px',height:100+'%'}}>
+    <div  style={{border:'0px solid red',width:100+'%',minHeight:200+'px',height:100+'%'}}>
         <_PageEditor></_PageEditor>
     </div>
 );
