@@ -5,6 +5,11 @@ export const options = {
     readOnly: false,
     fontSize: 12,
 };
+//
+// https://microsoft.github.io/monaco-editor/monarch.html
+// https://github.com/Microsoft/monaco-editor/issues/74
+// Auto
+// https://gist.github.com/mwrouse/05d8c11cd3872c19c684bd1904a2202e
 
 // This config defines how the language is displayed in the editor.
 export const languageDef = {
@@ -103,6 +108,43 @@ export const languageDef = {
         'SYSTEM KILL',
         'CLEAR COLUMN IN PARTITION'
     ],
+    typeKeywords: [
+        'date',
+        'integer',
+        'uint8',
+        'uint16',
+        'uint32',
+        'uint64',
+        'int8',
+        'int16',
+        'int32',
+        'int64',
+        'float32',
+        'float64',
+        'datetime',
+        'enum8',
+        'enum16',
+        'fixedstring',
+        'array',
+        'tuple',
+        'string',
+        'Distributed',
+        'Tinylog',
+        'MergeTree',
+        'SummingMergeTree',
+        'ReplacingMergeTree',
+        'ReplicatedMergeTree',
+        'Buffer',
+        'ReplicatedCollapsingMergeTree',
+        'CollapsingMergeTree',
+        'AggregatingMergeTree',
+        'Merge',
+        'Memory',
+        'GraphiteMergeTree',
+        'ReplicatedAggregatingMergeTree',
+        'ReplicatedSummingMergeTree'
+
+    ],
     operators: [
         // Logical
         'ALL', 'AND', 'ANY', 'BETWEEN', 'EXISTS', 'IN', 'LIKE', 'NOT', 'OR', 'SOME',
@@ -138,10 +180,12 @@ export const languageDef = {
             { include: '@strings' },
             { include: '@complexIdentifiers' },
             { include: '@scopes' },
+            [/;;/, 'warn-token'],
             [/[;,.]/, 'delimiter'],
             [/[()]/, '@brackets'],
             [/[\w@#$]+/, {
                 cases: {
+                    '@typeKeywords':'keyword.type',
                     '@keywords': 'keyword',
                     '@operators': 'operator',
                     '@builtinVariables': 'predefined',
