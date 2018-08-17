@@ -3,6 +3,10 @@ FROM node:10.9 AS build
 
 ENV APP_HOME /usr/src/app
 
+ADD . $APP_HOME
+
+WORKDIR $APP_HOME
+
 RUN npm install
 RUN bower install
 RUN gulp build
