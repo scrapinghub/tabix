@@ -8,6 +8,8 @@ ADD . $APP_HOME
 WORKDIR $APP_HOME
 
 RUN npm install
+RUN npm install bower -g
+RUN npm install gulp -g
 RUN bower install
 RUN gulp build
 
