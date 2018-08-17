@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 if [ ! -z "$PASSWORD" ]; then
   sh -c "echo -n '$USER:$(openssl passwd -crypt $PASSWORD)\n' >> /etc/nginx/.htpasswd"
 else
