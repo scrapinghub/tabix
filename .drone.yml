@@ -1,8 +1,5 @@
 image: scrapinghub
 
 script:
-  - npm install
-  - bower install
-  - gulp build
   - build_docker_image
   - push_docker_image
