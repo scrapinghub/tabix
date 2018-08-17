@@ -40,6 +40,16 @@ server {
                 try_files $uri $uri/ =404;
         }
 
+
+        # Reverse proxy clickhouse http calls
+        location ~ ^/_proxy$ {
+                proxy_read_timeout 300s;
+
+                proxy_set_header Authorization "Basic $arg_auth";
+
+                proxy_pass $arg_host/;
+        }
+
         # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
         #
         #location ~ \.php$ {
