@@ -17,7 +17,7 @@ RUN gulp build
 FROM nginx:alpine
 
 ENV APP_HOME /usr/src/app
-ENV DEFAULT /etc/nginx/sites-enabled/default
+ENV DEFAULT /etc/nginx/conf.d/default.conf
 
 WORKDIR $APP_HOME
 ADD ./docker $APP_HOME
