@@ -5,6 +5,8 @@ ENV APP_HOME /usr/src/app
 
 ADD . $APP_HOME
 
+RUN rm -rf /usr/src/app/build
+
 WORKDIR $APP_HOME
 
 RUN npm install
