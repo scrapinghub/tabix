@@ -10,7 +10,7 @@ WORKDIR $APP_HOME
 RUN npm install
 RUN npm install bower -g
 RUN npm install gulp -g
-RUN bower --allow-root --force-latest install
+RUN bower --allow-root install
 RUN gulp build
 
 # STEP 2: PACKAGE
