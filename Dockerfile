@@ -1,5 +1,5 @@
 # STEP 1: BUILD
-FROM node:10.9 AS build
+FROM node:6.14 AS build
 
 ENV APP_HOME /usr/src/app
 
