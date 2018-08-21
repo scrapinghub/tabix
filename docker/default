@@ -38,8 +38,16 @@ server {
                 # First attempt to serve request as file, then
                 # as directory, then fall back to displaying a 404.
                 try_files $uri $uri/ =404;
-                auth_basic "Restricted Content";
-                auth_basic_user_file /etc/nginx/.htpasswd;
+        }
+
+
+        # Reverse proxy clickhouse http calls
+        location /_proxy {
+                proxy_read_timeout 300s;
+
+                proxy_set_header Authorization "Basic @CH_AUTH@";
+
+                proxy_pass @CH_HOST@;
         }
 
         # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
