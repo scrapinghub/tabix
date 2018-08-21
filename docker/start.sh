@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
 set -e
 
-
+config_file=/mnt/mesos/sandbox/env.sh
+if [ -f $config_file ]; then
+    echo "Reading config variables from $config_file"
+    source $config_file
+fi
 
 # Replace host in nginx proxy config (use percentage because urls contain slashes)
 sed -i "s%@CH_HOST@%$CH_HOST%g" /etc/nginx/sites-enabled/default
