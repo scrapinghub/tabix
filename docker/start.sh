@@ -1,25 +1,22 @@
 #!/usr/bin/env bash
-if [ ! -z "$PASSWORD" ]; then
-  sh -c "echo -n '$USER:$(openssl passwd -crypt $PASSWORD)\n' >> /etc/nginx/.htpasswd"
-else
-  mv -f $APP_HOME/default_no_pass $DEFAULT
-fi
-CONN=""
-if [ ! -z "$CH_NAME" ]; then
-   CONN+="window.global_tabix_default_settings.name=\"${CH_NAME}\";"
-fi
-if [ ! -z "$CH_HOST" ]; then
-   CONN+="window.global_tabix_default_settings.host=\"${CH_HOST}\";"
-fi
-if [ ! -z "$CH_PASSWORD" ]; then
-   CONN+="window.global_tabix_default_settings.password=\"${CH_PASSWORD}\";"
-fi
-if [ ! -z "$CH_LOGIN" ]; then
-   CONN+="window.global_tabix_default_settings.login=\"${CH_LOGIN}\";"
-fi
+set -e
+
+
+
+# Replace host in nginx proxy config (use percentage because urls contain slashes)
+sed -i "s%@CH_HOST@%$CH_HOST%g" /etc/nginx/sites-enabled/default
+# Create basic auth header based on login and password
+CH_AUTH=$(echo -n "${CH_LOGIN:-default}:$CH_PASSWORD" | base64)
+sed -i "s/@CH_AUTH@/$CH_AUTH/g" /etc/nginx/sites-enabled/default
+
+# Set default connection to point to local proxy
+CONN="window.global_tabix_default_settings.name=\"${CH_NAME:-default}\";"
+CONN+="window.global_tabix_default_settings.login=\"default\";"
+CONN+="window.global_tabix_default_settings.host=window.location.origin + \"/_proxy\";"
 if [ ! -z "$CH_PARAMS" ]; then
    CONN+="window.global_tabix_default_settings.params=\"${CH_PARAMS}\";"
 fi
+
 if [ ! -z "$CONN" ]; then
   INDEX=$(cat /var/www/html/index.html)
   # Insert the connection string at the start of index.html if it does not already exist.
@@ -30,4 +27,5 @@ if [ ! -z "$CONN" ]; then
     echo $INDEX > /var/www/html/index.html
   fi
 fi
+
 nginx -g "daemon off;"
